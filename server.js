@@ -14,7 +14,7 @@ app.use(
 );
 
 app.get("/", function (req, res) {
-  res.send("Hello Api");
+  res.send("Hello Artur");
 });
 app.get("/users", function (req, res) {
   mongo.connect(
