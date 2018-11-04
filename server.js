@@ -13,20 +13,21 @@ app.use(
   })
 );
 
-app.get("/", function (req, res) {
-  res.send("Hello Artur defsdfswdwesdfdsfs");
+app.get("/", function(req, res) {
+  res.send("Hello Artur defsdfswdwesdfdsddsfs");
 });
-app.get("/users", function (req, res) {
+app.get("/users", function(req, res) {
   mongo.connect(
-    url, {
+    url,
+    {
       useNewUrlParser: true
     },
-    function (err, client) {
+    function(err, client) {
       console.log("Connected successfully to server");
       const db = client.db(dbName);
       // Get the documents collection
       const collection = db.collection("users");
-      collection.find({}).toArray(function (err, result) {
+      collection.find({}).toArray(function(err, result) {
         if (err) throw err;
         res.send(result);
         client.close();
@@ -35,33 +36,37 @@ app.get("/users", function (req, res) {
   );
 });
 
-app.get("/users/:id", function (req, res) {
+app.get("/users/:id", function(req, res) {
   mongo.connect(
-    url, {
+    url,
+    {
       useNewUrlParser: true
     },
-    function (err, client) {
+    function(err, client) {
       console.log("Connected successfully to server");
       const db = client.db(dbName);
       // Get the documents collection
       console.log(typeof req.params.id);
       const collection = db.collection("users");
-      collection.find({
-        _id: req.params.id
-      }).toArray(function (err, result) {
-        if (err) throw err;
-        res.send(result);
-        client.close();
-      });
+      collection
+        .find({
+          _id: req.params.id
+        })
+        .toArray(function(err, result) {
+          if (err) throw err;
+          res.send(result);
+          client.close();
+        });
     }
   );
 });
-app.post("/users", function (req, res) {
+app.post("/users", function(req, res) {
   mongo.connect(
-    url, {
+    url,
+    {
       useNewUrlParser: true
     },
-    function (err, client) {
+    function(err, client) {
       console.log("Connected successfully to server");
       var user = {
         _id: req.body.id,
@@ -71,8 +76,8 @@ app.post("/users", function (req, res) {
       const db = client.db(dbName);
       // Get the documents collection
       const collection = db.collection("users");
-      collection.insertOne(user, function (err, result) {
-        collection.find({}).toArray(function (err, result) {
+      collection.insertOne(user, function(err, result) {
+        collection.find({}).toArray(function(err, result) {
           if (err) throw err;
           res.send(result);
           client.close();
@@ -82,9 +87,10 @@ app.post("/users", function (req, res) {
   );
 });
 
-app.put("/users/", function (req, res) {
+app.put("/users/", function(req, res) {
   mongo.connect(
-    url, {
+    url,
+    {
       useNewUrlParser: true
     },
     // function (err, client) {
@@ -110,36 +116,36 @@ app.put("/users/", function (req, res) {
     //     client.close();
     //   });
     // }
-    function (err, client) {
+    function(err, client) {
       console.log("Connected successfully to server");
       const db = client.db(dbName);
       // Get the documents collection
       const collection = db.collection("users");
       try {
-        collection.updateOne({
-          "_id": req.body.id
-        }, {
-          $set: {
-            "name": req.body.name,
-            "age": req.body.age
+        collection.updateOne(
+          {
+            _id: req.body.id
+          },
+          {
+            $set: {
+              name: req.body.name,
+              age: req.body.age
+            }
+          },
+          {
+            upsert: true
+          },
+          function(err, result) {
+            res.send(result);
           }
-
-        }, {
-          upsert: true
-        }, function (err, result) {
-          res.send(result)
-        })
+        );
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
 
       client.close();
-    });
-
-
-
-
-
+    }
+  );
 });
 
 //   var userToEdit = users.find(function(user) {
@@ -149,26 +155,29 @@ app.put("/users/", function (req, res) {
 //   res.send(userToEdit);
 //   console.log(userToEdit.name);
 
-
-app.delete("/delete/:id", function (req, res) {
+app.delete("/delete/:id", function(req, res) {
   mongo.connect(
-    url, {
+    url,
+    {
       useNewUrlParser: true
     },
-    function (err, client) {
+    function(err, client) {
       console.log("Connected successfully to server");
       const db = client.db(dbName);
       // Get the documents collection
       const collection = db.collection("users");
-      collection.deleteOne({
-        _id: req.params.id
-      }, function () {
-        collection.find().toArray(function (err, result) {
-          if (err) throw err;
-          res.send(result);
-          client.close();
-        });
-      });
+      collection.deleteOne(
+        {
+          _id: req.params.id
+        },
+        function() {
+          collection.find().toArray(function(err, result) {
+            if (err) throw err;
+            res.send(result);
+            client.close();
+          });
+        }
+      );
     }
   );
 
@@ -190,7 +199,7 @@ const dbName = "myproject";
 
 // Use connect method to connect to the server
 
-app.listen(process.env.PORT, function (db) {
+app.listen(process.env.PORT, function(db) {
   console.log(
     `Api app started on port - ${process.env.PORT}; ${process.env.SERVER_URL}:${
       process.env.PORT
